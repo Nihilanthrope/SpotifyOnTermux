@@ -1,227 +1,310 @@
-```markdown
-# 🎵 SpotifyOnTermux  
-### Spotify-Style Music Downloader & Player for Android (Termux)
+<div align="center">
 
-[![GitHub Repo](https://img.shields.io/badge/GitHub-Nihilanthrope%2FSpotifyOnTermux-blue?logo=github)](https://github.com/Nihilanthrope/SpotifyOnTermux)
-[![Platform](https://img.shields.io/badge/platform-Termux%20(Android)-green?logo=android)](https://termux.dev/)
-[![License](https://img.shields.io/badge/license-MIT-brightgreen)](LICENSE)
-[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
+# 🎵 Termux Spotify Downloader & Music Player
 
-> A hybrid CLI tool that brings a Spotify-like music experience to your Termux terminal.  
-> Search & download songs using **spotdl** (optional, Spotify metadata) or **yt-dlp** (stable YouTube fallback), convert to **MP3**, and play instantly with **mpv** – all offline, right on your Android device.
+**A Spotify-like music experience, right in your terminal — on Android.**
+
+Download songs from YouTube or Spotify links and play them offline using `mpv` — no GUI, no ads, no nonsense.
+
+[![Made for Termux](https://img.shields.io/badge/Made%20for-Termux-black?style=flat-square&logo=android&logoColor=white)](https://termux.dev)
+[![Python](https://img.shields.io/badge/Python-3.8+-blue?style=flat-square&logo=python&logoColor=white)](https://python.org)
+[![yt-dlp](https://img.shields.io/badge/Powered%20by-yt--dlp-red?style=flat-square)](https://github.com/yt-dlp/yt-dlp)
+[![License: Free](https://img.shields.io/badge/License-Free%20to%20Use-green?style=flat-square)](#-license)
+
+</div>
 
 ---
 
 ## 🎬 Demo
 
-| Search & Download (yt‑dlp) | Playback with mpv |
-|:---------------------------:|:-----------------:|
-| ![Search & download](https://media.giphy.com/media/3o6Zt6KHxJTbCKlX7W/giphy.gif) | ![mpv playback](https://media.giphy.com/media/l0HlBO7eyXz5kA4nK/giphy.gif) |
+> Watch it in action — search, download, and play music straight from the Termux CLI.
 
-*Actual terminal recordings – replace with your own GIFs for a personal touch.*
+<div align="center">
+
+**Downloading a song via yt-dlp**
+
+![yt-dlp download demo](https://media.giphy.com/media/3o7TKSjRrfIPjeiVyM/giphy.gif)
+
+**Playing music with mpv in Termux**
+
+![mpv playback demo](https://media.giphy.com/media/xT9IgzoKnwFNmISR8I/giphy.gif)
+
+> 📌 *Replace these GIFs with your own screen recordings using [termux-share](https://wiki.termux.com/wiki/Termux:API) or a screen recorder app.*
+
+</div>
 
 ---
 
 ## ✨ Features
 
-- 🔎 **Spotify‑style search** – `spotdl` uses Spotify metadata (no API key needed)
-- 🧠 **YouTube fallback** – `yt-dlp` with `ytsearch:` for fail‑proof downloads
-- 💾 **MP3 extraction** – downloads best audio, converts to MP3, embeds cover art
-- 🔊 **mpv playback** – terminal‑based audio player with seek & volume control
-- 📴 **100% offline** – listen anywhere, anytime after download
-- 🖥️ **CLI‑only** – no GUI, perfect for Termux’s minimal environment
-- ⚡ **Lightweight** – runs on any Android version, no root required
-- 🎯 **Smart output** – organise files into custom folders automatically
+| Feature | Status | Method |
+|---|---|---|
+| 🎵 Spotify link download | ⚠️ Optional | `spotdl` |
+| 🔍 YouTube song search | ✅ Stable | `yt-dlp ytsearch` |
+| 📥 MP3 extraction | ✅ Stable | `yt-dlp + ffmpeg` |
+| 🔊 Music playback | ✅ Stable | `mpv` |
+| 📶 Offline playback | ✅ Stable | Local MP3 files |
+| 💻 CLI-only (no GUI) | ✅ | Pure Termux |
+
+- **Spotify-style search** — search by song name or paste a Spotify link (via `spotdl`, optional)
+- **YouTube fallback** — rock-solid search using `yt-dlp ytsearch:` — works even when spotdl breaks
+- **MP3 downloads** — extract clean audio with `ffmpeg` under the hood
+- **mpv playback** — lightweight, keyboard-controlled audio player in the terminal
+- **Offline support** — files are saved locally; play them anytime without internet
+- **Pure CLI** — no GUI required, built entirely for Termux on Android
 
 ---
 
 ## 📋 Requirements
 
-All tools are available in Termux’s package manager. Install them with:
+### Termux Packages
+
+Install all required packages in one shot:
 
 ```bash
 pkg update && pkg upgrade -y
 pkg install python ffmpeg mpv yt-dlp git rust clang make -y
 ```
 
-· python – runtime for spotdl and pip
-· ffmpeg – audio conversion & thumbnail embedding
-· mpv – terminal media player
-· yt-dlp – the core download engine
-· git – clone this repository
-· rust / clang / make – required by some spotdl dependencies (may compile native code)
+> 💡 `rust` and `clang` are needed to build Python packages like `spotdl` that have native dependencies.
+
+### Python pip
+
+```bash
+pip install --upgrade pip
+```
 
 ---
 
-⚙️ Installation
+## 🚀 Installation
 
-Quick Setup (Recommended)
+### Step 1 — Set up Termux storage access
 
 ```bash
-# Clone the repository
-git clone https://github.com/Nihilanthrope/SpotifyOnTermux.git
-cd SpotifyOnTermux
-
-# Make the main script executable (if present)
-chmod +x spotify-termux
-
-# Install Python dependencies (optional)
-pip install --user spotdl
+termux-setup-storage
 ```
 
-🧩 If you skip spotdl, the tool will automatically fall back to yt-dlp.
-
-Path Fix for spotdl
-
-After pip install --user, add the local bin folder to your PATH:
+### Step 2 — Clone this repository
 
 ```bash
+git clone https://github.com/Nihilanthrope/SpotifyOnTermux.git
+cd SpotifyOnTermux
+```
+
+### Step 3 — (Optional) Install spotdl
+
+> ⚠️ `spotdl` is **optional**. It may fail on Android due to native dependency issues (`tls-client`, `cryptography`, etc.). If it breaks, use the `yt-dlp` method instead — it's the primary stable method.
+
+```bash
+pip install spotdl
+```
+
+If `spotdl` isn't found after install, fix your PATH:
+
+```bash
+export PATH="$HOME/.local/bin:$PATH"
 echo 'export PATH="$HOME/.local/bin:$PATH"' >> ~/.bashrc
 source ~/.bashrc
 ```
 
 ---
 
-🚀 Usage
+## 🎯 Usage
 
-🔹 Method 1: Spotify search with spotdl (optional)
+### 🎶 Method 1 — spotdl (Spotify link or song name)
+
+Download via a direct Spotify track link:
 
 ```bash
-# Download a track from a Spotify link
-spotdl "https://open.spotify.com/track/4cOdK2wGLETKBW3PvgPWqT"
-
-# Search by song name (uses Spotify’s database)
-spotdl "blinding lights the weeknd"
+spotdl "https://open.spotify.com/track/YOUR_TRACK_ID"
 ```
 
-⚠️ spotdl may break on Android due to missing system libraries (e.g., tls-client).
-If it fails, Method 2 is your bullet‑proof backup.
-
-🔹 Method 2: YouTube search fallback (stable, default)
+Download by song name (spotdl searches internally):
 
 ```bash
-# Basic search & MP3 download
-yt-dlp -x --audio-format mp3 --embed-thumbnail "ytsearch:shape of you ed sheeran"
-
-# With custom output folder and filename
-yt-dlp -x --audio-format mp3 -o "~/Music/%(title)s.%(ext)s" "ytsearch:beliver imagine dragons"
+spotdl "Bohemian Rhapsody Queen"
 ```
 
-🔊 Play downloaded MP3s
+> ⚠️ This method is **not using the official Spotify API**. It scrapes metadata and finds the audio on YouTube. It may break at any time.
+
+---
+
+### 📺 Method 2 — yt-dlp YouTube search (recommended)
+
+Search and download by song name using YouTube search:
 
 ```bash
-# Play a single file
-mpv "Blinding Lights.mp3"
+yt-dlp "ytsearch:Bohemian Rhapsody Queen" -x --audio-format mp3 -o "%(title)s.%(ext)s"
+```
 
-# Play all MP3s in the current folder
+Download from a direct YouTube URL:
+
+```bash
+yt-dlp "https://www.youtube.com/watch?v=fJ9rUzIMcZQ" -x --audio-format mp3 -o "%(title)s.%(ext)s"
+```
+
+---
+
+### 🔊 Method 3 — Play a downloaded MP3 with mpv
+
+```bash
+mpv "Bohemian Rhapsody.mp3"
+```
+
+Play all MP3s in the current folder:
+
+```bash
 mpv *.mp3
-
-# Play with loop & shuffle
-mpv --loop --shuffle *.mp3
 ```
 
----
-
-🧩 Advanced Workflows
-
-One‑liner: Search, download & play instantly
+Shuffle playback:
 
 ```bash
-yt-dlp -x --audio-format mp3 "ytsearch:dance monkey" -o "%(title)s.%(ext)s" && mpv *.mp3
+mpv --shuffle *.mp3
 ```
 
-Download a playlist from YouTube (audio only)
+---
+
+## 🔁 Example Workflows
+
+### ▶️ Download and play in one command
 
 ```bash
-yt-dlp -x --audio-format mp3 --yes-playlist "https://youtube.com/playlist?list=..."
+yt-dlp "ytsearch:Lose Yourself Eminem" -x --audio-format mp3 -o "%(title)s.%(ext)s" && mpv *.mp3
 ```
 
-Create a daily hits folder with date stamp
+### 🔍 Spotify-style search simulation using yt-dlp
+
+Can't use real Spotify search? Simulate it — search by artist + title:
 
 ```bash
-mkdir -p ~/Music/$(date +%F)
-yt-dlp -x --audio-format mp3 -o "~/Music/$(date +%F)/%(title)s.%(ext)s" "ytsearch:top hits 2025"
+# Search for top result and download it
+yt-dlp "ytsearch1:Blinding Lights The Weeknd official audio" \
+  -x --audio-format mp3 \
+  -o "%(title)s.%(ext)s"
 ```
 
-Batch download from a text file (one song per line)
+> `ytsearch1:` fetches only the top result. Use `ytsearch3:` to grab the top 3.
+
+### 📂 Download an entire YouTube playlist as MP3
 
 ```bash
-while read song; do
-    yt-dlp -x --audio-format mp3 "ytsearch:$song"
-done < songs.txt
+yt-dlp -x --audio-format mp3 \
+  -o "%(playlist_index)s - %(title)s.%(ext)s" \
+  "https://www.youtube.com/playlist?list=YOUR_PLAYLIST_ID"
 ```
 
 ---
 
-📂 Output Location
+## 📁 Output
 
-· Default: current working directory (~/SpotifyOnTermux/ after cloning)
-· Custom: use -o "~/Music/%(title)s.%(ext)s" to save anywhere
-· All files are standard MP3s with embedded cover art – playable by any Android music app.
+Downloaded files are saved in the **current working directory** by default.
 
----
+To save directly to your phone's music folder:
 
-🔧 Troubleshooting
-
-Symptom Fix
-spotdl: command not found Add ~/.local/bin to PATH (see Installation)
-spotdl crashes with tls-client error Known Android limitation → use yt-dlp fallback
-yt-dlp not found / outdated pkg install yt-dlp or pip install -U yt-dlp
-mpv no sound Check Android media volume; grant Termux notification access
-Missing thumbnails Install ffmpeg – pkg install ffmpeg
-error: externally-managed-environment Use pip install --user or set up a virtualenv
-
----
-
-📝 Important Notes
-
-· 🚫 No official Spotify API is used. spotdl scrapes public data, which is legal grey area – use at your own discretion.
-· 🧪 spotdl is optional & unstable on Android. This tool treats yt-dlp as the primary engine.
-· 📦 This repository may contain scripts that wrap yt-dlp and mpv for a smoother experience. Customise them to your liking.
-· 🎧 All downloads are legal personal copies if you own the original music or it’s royalty‑free.
-
----
-
-🔮 Roadmap / Future Improvements
-
-· Terminal UI (TUI) – interactive song browser using fzf or dialog
-· Playlist manager – save/load playlists, shuffle, repeat
-· Synced lyrics – fetch and display lyrics while playing
-· Folder auto‑sort – artist/album/year structure
-· Live wallpaper sync – send album art to Muzei or KLWP
-· MusicBrainz tagging – correct metadata after download
-· Termux:API integration – notify on new downloads, control from widget
-
-Pull requests are highly encouraged! Check out CONTRIBUTING.md for guidelines.
-
----
-
-🤝 Contributing
-
-1. Fork the repo
-2. Create your feature branch (git checkout -b feature/amazing-idea)
-3. Commit your changes (git commit -m 'Add amazing idea')
-4. Push to the branch (git push origin feature/amazing-idea)
-5. Open a Pull Request
-
----
-
-📜 License
-
-This project is open source under the MIT License.
-You are free to use, modify, and distribute it – see the license file for details.
-
----
-
-❤️ Acknowledgements
-
-· spotdl – Spotify metadata & downloading
-· yt-dlp – the backbone of all downloads
-· mpv – lightweight, terminal media player
-· Termux – a real Linux environment for Android
-
----
-
-🎧 Happy offline listening – in the terminal!
-
+```bash
+yt-dlp "ytsearch:Song Name Artist" \
+  -x --audio-format mp3 \
+  -o "/sdcard/Music/%(title)s.%(ext)s"
 ```
+
+> 💡 Make sure you've run `termux-setup-storage` first so Termux can write to `/sdcard/`.
+
+---
+
+## 🛠️ Troubleshooting
+
+### `spotdl: command not found`
+
+Your PATH doesn't include pip's local bin. Fix:
+
+```bash
+export PATH="$HOME/.local/bin:$PATH"
+echo 'export PATH="$HOME/.local/bin:$PATH"' >> ~/.bashrc
+source ~/.bashrc
+```
+
+---
+
+### `spotdl` fails with dependency errors (`tls-client`, `cffi`, etc.)
+
+This is a known issue on Android/Termux. Some native packages fail to compile on ARM.
+
+**Fix:** Skip spotdl entirely and use the `yt-dlp` fallback method. It's more stable and works natively on Android.
+
+---
+
+### `yt-dlp` not found after `pkg install`
+
+Try installing via pip instead:
+
+```bash
+pip install yt-dlp
+```
+
+Or update the pkg version:
+
+```bash
+pkg install yt-dlp --reinstall
+```
+
+---
+
+### `mpv` has no audio output
+
+Termux needs audio permissions. Make sure you've granted microphone/audio permissions to Termux in Android settings, or install [Termux:API](https://f-droid.org/en/packages/com.termux.api/):
+
+```bash
+pkg install termux-api
+```
+
+---
+
+### `ffmpeg` not found (audio extraction fails)
+
+```bash
+pkg install ffmpeg
+```
+
+---
+
+## 📌 Important Notes
+
+> Please read before using.
+
+- ❌ **This tool does NOT use the official Spotify API.** Spotify's API does not allow audio downloads.
+- ⚠️ **`spotdl` is optional and unstable on Android.** It works by scraping Spotify metadata and finding matching audio on YouTube. It can break when Spotify or YouTube changes their structure.
+- ✅ **`yt-dlp` is the primary, stable method.** It directly searches and downloads from YouTube and is actively maintained.
+- 📦 All downloads are stored locally. Once downloaded, no internet connection is needed for playback.
+- 🔒 Use responsibly. Respect copyright laws in your region.
+
+---
+
+## 🔮 Future Improvements
+
+Things on the roadmap (contributions welcome):
+
+- [ ] 🎼 **Playlist support** — download and auto-queue entire playlists
+- [ ] 🖥️ **Terminal UI menu** — `fzf` or `whiptail` based interactive song picker
+- [ ] 📝 **Lyrics display** — fetch and display synced lyrics via `lyrics.ovh` or similar free APIs
+- [ ] 📁 **Auto folder organization** — sort downloads by artist/album automatically
+- [ ] 🎨 **Live wallpaper sync** — change Termux color scheme based on now-playing song (using `termux-wallpaper`)
+- [ ] 🔄 **Auto-update checker** — notify when `yt-dlp` has a new version available
+
+---
+
+## 📄 License
+
+This project is **free to use**. No restrictions. Do whatever you want with it.
+
+If you found it useful, drop a ⭐ on the repo — it helps.
+
+---
+
+<div align="center">
+
+Built with 🖤 for Termux users who want music without the bloat.
+
+**[GitHub](https://github.com/Nihilanthrope/SpotifyOnTermux)** • **[Report an Issue](https://github.com/Nihilanthrope/SpotifyOnTermux/issues)** • **[Contribute](https://github.com/Nihilanthrope/SpotifyOnTermux/pulls)**
+
+</div>
