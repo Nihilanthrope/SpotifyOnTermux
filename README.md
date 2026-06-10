@@ -22,8 +22,9 @@ Download songs from YouTube or Spotify links and play them offline using `mpv` �
 <div align="center">
 
 **Downloading a song via yt-dlp**
-
-![yt-dlp download demo] [![▶️ Watch Demo](thumbnail.png)](a939ca1543a53e11357f3a9d94259ffb_720w.mp4)
+<p align="center">
+  <img src="https://media1.tenor.com/m/UbbY0mVEkjwAAAAC/absolutely-konosuba.gif" width="400">
+</p>
 
 **Playing music with mpv in Termux**
 
