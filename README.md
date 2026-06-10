@@ -279,6 +279,9 @@ pkg install ffmpeg
 - 📦 All downloads are stored locally. Once downloaded, no internet connection is needed for playback.
 - 🔒 Use responsibly. Respect copyright laws in your region.
 
+<p align="center">
+  <img src="https://media1.tenor.com/m/U4M0YIfHTysAAAAC/anime-megumin.gif" width="400">
+</p>
 ---
 
 ## 🔮 Future Improvements
