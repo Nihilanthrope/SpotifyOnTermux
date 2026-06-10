@@ -281,7 +281,9 @@ pkg install ffmpeg
 
 <p align="center">
   <img src="https://media1.tenor.com/m/U4M0YIfHTysAAAAC/anime-megumin.gif" width="400">
+  
 </p>
+
 ---
 
 ## 🔮 Future Improvements
