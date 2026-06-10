@@ -123,3 +123,5 @@ done
 
 
 #lol took me almost 8-10 hrs
+#btw i have use ai 30-40% i be honest af
+#for clean code and bugs🥀💔 +indentation i was so fucked up 
